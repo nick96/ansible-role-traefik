@@ -1,0 +1,31 @@
+---
+galaxy_info:
+  author: Nick Spain
+  description: Ansible role to deploy traefik
+  issue_tracker_url: https://github.com/nick96/ansible-role-traefik
+  license: MIT
+  min_ansible_version: 2.2
+  platforms:
+    - name: Fedora
+      versions:
+        - all
+    - name: EL
+      versions:
+        - 10
+        - 9
+    - name: Debian
+      version:
+        - stretch
+        - jessie
+    - name: Ubuntu
+      version:
+        - bionic
+        - xenial
+
+  galaxy_tags:
+    - docker
+    - loadbalancer
+    - reverseproxy
+
+  dependencies:
+    - ansible-role-docker

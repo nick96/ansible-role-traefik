@@ -1,0 +1,44 @@
+---
+- name: Create the traefik directory
+  file:
+    path: "{{ traefik_dir }}"
+    state: directory
+
+- name: Create the .htpasswd file
+  when: "{{ traefik_basic_auth | bool }}"
+  htpasswd:
+    path: "{{ traefik_htpasswd }}"
+    name: "{{ traefik_basic_user }}"
+    password: "{{ traefik_basic_password }}"
+
+- name: Create acme.json placeholder
+  copy:
+    content: ""
+    dest: "{{ traefik_dir }}/acme.json"
+    force: no
+    mode: 600
+
+- name: Copy traefik config template
+  template:
+    src: traefik.toml.j2
+    dest: "{{ traefik_dir }}/traefik.toml"
+
+- name: Create the traefik network
+  when: not "{{ traefik_web_network }}" == ""
+  docker_network:
+    name: "{{ traefik_web_network }}"
+    state: present
+
+- name: Launch traefik container
+  docker_container:
+    name: traefik
+    image: "traefik:{{ traefik_tag }}"
+    state: started
+    restart_policy: "{{ traefik_restart_policy }"
+    exposed_ports: "{{ traefik_exposed_ports }}"
+    ports: "{{ traefik_ports }}"
+    env: "{{ traefik_env_vars }}"
+    purge_networks: "{{ traefik_purge_networks | bool }}"
+    networks: "{{ traefik_networks }}"
+    volumes: "{{ traefik_volumes }}"
+    labels: "{{ traefik_labels }}"

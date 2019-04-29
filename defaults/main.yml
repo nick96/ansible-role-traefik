@@ -1,0 +1,31 @@
+---
+traefik_dir: "/etc/traefik"
+traefik_basic_auth: false
+traefik_htpasswd: "{{ traefik_dir }}/.htpasswd"
+traefik_basic_user: ""
+traefik_basic_password: ""
+traefik_tag: ""
+traefik_restart_policy: "always"
+traefik_exposed_ports:
+  - 8080
+traefik_ports:
+  - 80:80
+  - 443:443
+traefik_env_vars:
+traefik_purge_networks: true
+traefik_web_network: "web"
+traefik_networks:
+  - "{{ traefik_web_network }}"
+traefik_volumes:
+  - /var/run/docker.sock:/var/run/docker.sock:ro
+  - "{{ traefik_dir }}:{{ traefik_dir }}"
+  - "{{ traefik_htpasswd }}:{{ traefik_htpasswd }}"
+traefik_labels:
+  traefik.enable: "true"
+  traefik.port: "8080"
+  traefik.frontend.rule: "Host:traefik.{{ traefik_domain }}"
+  traefik.docker.network: "{{ traefik_web_network }}"
+  treafik.frontend.auth.basic.userFile: "{{ traefik_htpasswd }}"
+traefik_dns_challenge_provider: "digitalocean"
+traefik_dns_challenge: true
+traefik_http_challenge: false
