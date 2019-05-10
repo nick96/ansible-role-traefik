@@ -5,7 +5,7 @@
     state: directory
 
 - name: Create the .htpasswd file
-  when: "{{ traefik_basic_auth | bool }}"
+  when: traefik_basic_auth
   htpasswd:
     path: "{{ traefik_htpasswd }}"
     name: "{{ traefik_basic_user }}"
@@ -16,7 +16,7 @@
     content: ""
     dest: "{{ traefik_dir }}/acme.json"
     force: no
-    mode: 600
+    mode: 0600
 
 - name: Copy traefik config template
   template:
@@ -24,7 +24,7 @@
     dest: "{{ traefik_dir }}/traefik.toml"
 
 - name: Create the traefik network
-  when: not "{{ traefik_web_network }}" == ""
+  when: traefik_web_network
   docker_network:
     name: "{{ traefik_web_network }}"
     state: present
