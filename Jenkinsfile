@@ -1,3 +1,4 @@
+// -*- mode: groovy -*-
 pipeline {
     agent {
 	docker {
@@ -9,6 +10,16 @@ pipeline {
 	stage('Test') {
 	    steps {
 		sh 'molecule test'
+	    }
+	}
+
+	stage('Tag') {
+	    steps {
+		script {
+		    def meta = readYaml(file: "${workspace}/meta/main.yml")
+		    sh "git tag ${meta.version}"
+		    sh 'git push --tags'
+		}
 	    }
 	}
     }
